@@ -12,7 +12,7 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 # Good starter choices:
 # - "openrouter/free" for cheapest experimentation
 # - a specific model later once your pipeline works
-DEFAULT_MODEL = "openrouter/free"
+DEFAULT_MODEL = "openai/gpt-4.1-mini"
 
 def test_openrouter_connection(model: str = DEFAULT_MODEL) -> dict:
     if not OPENROUTER_API_KEY:
