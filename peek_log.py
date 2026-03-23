@@ -1,7 +1,7 @@
 from inspect_ai.log import read_eval_log, read_eval_log_samples
 log_path = "Logs/honest_mimo-monitor_5-resamples-004.eval"
 
-log = read_eval_log(log_path,header_only=True)
+#log = read_eval_log(log_path,header_only=True)
 print("Loaded log")
 for i, sample in enumerate(read_eval_log_samples(log_path,all_samples_required=False)):
     print(f"\n=== SAMPLE {i} ===")
