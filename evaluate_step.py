@@ -62,7 +62,9 @@ def send_openrouter_messages(
     raise RuntimeError("send_openrouter_messages failed unexpectedly")
 
 def get_message_text(response: dict[str, Any]) -> str:
-    return response["choices"][0]["message"]["content"]
+    text = response["choices"][0]["message"]["content"]
+    logger.debug("Model response text: %s", text)
+    return text
 
 def get_reasoning_snippet(response: dict[str, Any]) -> str:
     return response["choices"][0]["message"]["reasoning"]

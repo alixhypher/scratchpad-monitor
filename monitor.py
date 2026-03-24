@@ -59,6 +59,7 @@ class Monitor:
         return [{"role":"system","content": render_prompt(self.template, **self.get_prompt_kwargs())}]
     def handle_response_text(self,text):
         score = extract_score(text)
+        self.last_score = score
         self.max_score = max(self.max_score, score)
         self.reasoning = extract_reasoning(text)
     def get_prompt_kwargs(self):
