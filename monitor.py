@@ -1,4 +1,4 @@
-from extract_steps import extract_steps, get_sample_steps_set
+
 from evaluate_step import send_openrouter_messages, get_message_text, get_reasoning_snippet
 import json
 import re
@@ -114,11 +114,12 @@ def test_prompt():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("command", choices=["test", "run"], default="run")
+    parser.add_argument("command",nargs="?", choices=["test", "run"], default="run")
     args = parser.parse_args()
     if args.command == "test":
         test_prompt()
     elif args.command == "run":
+        from extract_steps import extract_steps, get_sample_steps_set
         max_workers = 2
         max_samples = 20
 
