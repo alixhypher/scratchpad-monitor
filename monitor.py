@@ -73,8 +73,6 @@ class Scratchpad(Monitor):
     def __init__(self,task_description,prompt_name="scratchpad_monitor.txt"):
         super().__init__(task_description, prompt_name=prompt_name)
         self.scratchpad = ""
-    def get_message(self):
-        return [{"role":"system","content": render_prompt(self.template, task_description = self.task_description,actions = self.actions, scratchpad = self.scratchpad)}]
     def handle_response_text(self, text):
         super().handle_response_text(text)
         self.scratchpad = extract_scratchpad(text)
