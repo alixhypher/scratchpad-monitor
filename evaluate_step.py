@@ -6,7 +6,7 @@ import sys
 import random
 import requests
 import time
-
+import logging
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -14,39 +14,14 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 # Good starter choices:
 # - "openrouter/free" for cheapest experimentation
 # - a specific model later once your pipeline works
-#DEFAULT_MODEL = "openrouter/free"
-DEFAULT_MODEL = "gpt-4o-mini"
+DEFAULT_MODEL = "openrouter/free"
+#DEFAULT_MODEL = "gpt-4o-mini"
 
-def test_openrouter_connection(model: str = DEFAULT_MODEL) -> dict:
-    if not OPENROUTER_API_KEY:
-        raise RuntimeError("OPENROUTER_API_KEY is not set.")
+logger = logging.getLogger(__name__)
 
-    headers = {
-        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-        "Content-Type": "application/json",
-    }
+logging.basicConfig(level=logging.INFO,
+                    format="%(asctime)s %(levelname)s [%(threadName)s - %(name)s] %(message)s")
 
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": "You are a pirate."},
-            {"role": "user", "content": "Say hello in five words."}
-        ],
-    }
-
-    resp = requests.post(
-        OPENROUTER_URL,
-        headers=headers,
-        json=payload,
-        timeout=60,
-    )
-
-    print("STATUS:", resp.status_code)
-    print("RAW RESPONSE:")
-    print(resp.text)
-
-    resp.raise_for_status()
-    return resp.json()
 
 def send_openrouter_messages(  
     messages: list[dict[str, Any]],
