@@ -7,6 +7,7 @@ import random
 import requests
 import time
 import logging
+import argparse
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
@@ -30,6 +31,7 @@ def send_openrouter_messages(
     max_retries: int = 3,
     base_delay: float = 1.0,
 ) -> dict[str, Any]:
+    logger.debug("Sending messages to OpenRouter: %s", json.dumps(messages, indent=2))
     if not OPENROUTER_API_KEY:
         raise RuntimeError("OPENROUTER_API_KEY is not set.")
 
@@ -55,6 +57,7 @@ def send_openrouter_messages(
             resp.raise_for_status()
             return resp.json()
         except (requests.RequestException, ValueError) as e:
+            logger.debug("Attempt %d failed with error: %s", attempt + 1, e)
             if attempt == max_retries - 1:
                 raise
             sleep_time = delay * (2 ** attempt) + random.uniform(0, 1)
@@ -66,8 +69,15 @@ def get_message_text(response: dict[str, Any]) -> str:
     logger.debug("Model response text: %s", text)
     return text
 
+def get_model(response: dict[str, Any]) -> str:
+    model = response["model"]
+    logger.debug("Model used: %s", model)
+    return model
+
 def get_reasoning_snippet(response: dict[str, Any]) -> str:
-    return response["choices"][0]["message"]["reasoning"]
+    reasoning = response["choices"][0]["message"]["reasoning"]
+    logger.debug("Model reasoning snippet: %s", reasoning)
+    return reasoning
 
 def key_info():
     if not OPENROUTER_API_KEY:
@@ -83,17 +93,22 @@ def key_info():
     print("RAW RESPONSE:",json.dumps(resp.json(), indent=2))
 
 if __name__ == "__main__":
-    command = sys.argv[1] if len(sys.argv) > 1 else "test"
-    if command == "key-info":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("command",nargs="?", choices=["test", "key-info"], default="test")
+    parser.add_argument("log_level", nargs="?", choices=["debug", "info", "warning", "error"], default="info")
+    args = parser.parse_args()
+    logging.getLogger().setLevel(getattr(logging, args.log_level.upper(), None))
+    if args.command == "key-info":
         key_info()
 
-    if command == "test":
+    if args.command == "test":
         messages = [
             {"role": "system", "content": "You are a pirate."},
             {"role": "user", "content": "Say hello in five words."},
         ]
 
         data = send_openrouter_messages(messages)
-
+        print("Model:", get_model(data))
         print("\nMODEL SAID:")
         print(get_message_text(data))
+        logger.debug(json.dumps(data, indent=2))
