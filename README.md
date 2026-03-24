@@ -83,3 +83,8 @@ Trajectories are Claude Opus 4.6 BashArena runs (attack and benign) provided by 
 - Kaufman et al. (2025). [BashArena: A Control Setting for Highly Privileged AI Agents](https://arxiv.org/abs/2512.15688)
 - Bhatt et al. (2025). [Ctrl-Z: Controlling AI Agents via Resampling](https://arxiv.org/abs/2504.10374)
 - Greenblatt et al. (2024). [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942)
+
+## TODO
+- more robust error handling
+- improved data logging and visualization
+- pre-run function checks
