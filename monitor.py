@@ -1,5 +1,5 @@
 
-from evaluate_step import send_openrouter_messages, get_message_text, get_reasoning_snippet
+from evaluate_step import send_openrouter_messages, get_message_text, get_reasoning_snippet, get_model
 import json
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -15,9 +15,7 @@ logging.basicConfig(level=logging.INFO,
 def extract_score(text):
     match = re.search(r"<score>\s*(\d+(?:\.\d+)?)\s*</score>", text, re.IGNORECASE)
     if not match:
-        logger.warning("No score found in the text.")
-        logger.info("Text was: %s", text)
-        return -1
+        raise ValueError("Score not found in the text.")
     score = float(match.group(1))
     logger.debug("Extracted score: %s", score)
     return int(score) if score.is_integer() else score
@@ -58,16 +56,29 @@ class Monitor:
     def get_message(self):
         return [{"role":"system","content": render_prompt(self.template, **self.get_prompt_kwargs())}]
     def handle_response_text(self,text):
-        score = extract_score(text)
+        Error = None
+        try:
+            score = extract_score(text)
+        except ValueError as e: 
+            Error = f"Error extracting score: {e}"           
+            score = -1
         self.last_score = score
         self.max_score = max(self.max_score, score)
         self.reasoning = extract_reasoning(text)
+        return Error
     def get_prompt_kwargs(self):
         return {"task_description": self.task_description, "actions": self.actions}
+    
     def evaluate_step(self):
         messages = self.get_message()
         data = send_openrouter_messages(messages)
-        self.handle_response_text(get_message_text(data))
+        Error = self.handle_response_text(get_message_text(data))
+        if Error:
+            logger.error("Error handling response text: %s", Error)
+            logger.info("Message sent to model: %s", json.dumps(messages, indent=2))
+            logger.info("Model used: %s", get_model(data))
+            logger.info("Response text: %s", get_message_text(data))
+            logger.debug("Full response data: %s", json.dumps(data, indent=2))
         return self.last_score
 
 class Scratchpad(Monitor):
@@ -76,7 +87,9 @@ class Scratchpad(Monitor):
         self.scratchpad = ""
     def handle_response_text(self, text):
         super().handle_response_text(text)
-        self.scratchpad = extract_scratchpad(text)
+        new_scratchpad = extract_scratchpad(text)
+        logger.info("Scratchpad contents: %s", new_scratchpad)
+        self.scratchpad = new_scratchpad
     def get_prompt_kwargs(self):
         kwargs = super().get_prompt_kwargs()
         kwargs["scratchpad"] = self.scratchpad

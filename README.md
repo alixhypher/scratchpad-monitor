@@ -64,6 +64,12 @@ samples = get_sample_steps_set("Logs/attack_run.eval", max_samples=20)
 
 # Run both monitors across samples and compare scores
 ```
+```bash
+python3 evaluate_step.py keyinfo #see details about your API key
+python3 evaluate_step.py test #get a greeting from a pirate
+python3 sample_run.txt --max-workers=10 --max-samples=20
+```
+
 
 ## Data
 
@@ -87,4 +93,4 @@ Trajectories are Claude Opus 4.6 BashArena runs (attack and benign) provided by 
 ## TODO
 - more robust error handling
 - improved data logging and visualization
-- pre-run function checks
+- add more tests

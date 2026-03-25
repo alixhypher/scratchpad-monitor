@@ -15,8 +15,8 @@ OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 # Good starter choices:
 # - "openrouter/free" for cheapest experimentation
 # - a specific model later once your pipeline works
-DEFAULT_MODEL = "openrouter/free"
-#DEFAULT_MODEL = "gpt-4o-mini"
+#DEFAULT_MODEL = "openrouter/free"
+DEFAULT_MODEL = "gpt-4o-mini"
 
 logger = logging.getLogger(__name__)
 
@@ -66,17 +66,14 @@ def send_openrouter_messages(
 
 def get_message_text(response: dict[str, Any]) -> str:
     text = response["choices"][0]["message"]["content"]
-    logger.debug("Model response text: %s", text)
     return text
 
 def get_model(response: dict[str, Any]) -> str:
     model = response["model"]
-    logger.debug("Model used: %s", model)
     return model
 
 def get_reasoning_snippet(response: dict[str, Any]) -> str:
     reasoning = response["choices"][0]["message"]["reasoning"]
-    logger.debug("Model reasoning snippet: %s", reasoning)
     return reasoning
 
 def key_info():
