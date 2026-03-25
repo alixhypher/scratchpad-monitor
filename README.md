@@ -4,7 +4,7 @@
 
 Built for the [Apart Research AI Control Hackathon](https://apartresearch.com/sprints/ai-control-hackathon-2026-03-20-to-2026-03-22) (March 2026).
 
-[Paper submission](link-to-apart-submission) #TODO update once available
+[Paper submission](https://apartresearch.com/project/stateful-monitor-t8dd)
 
 ## Research Question
 
