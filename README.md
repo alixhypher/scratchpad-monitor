@@ -33,10 +33,9 @@ This project does **post-hoc monitoring** on existing Inspect `.eval` logs — n
 
 ```
 stateful-monitor/
-├── src/
-│   ├── extract_steps.py    # Parse .eval logs into monitorable steps
-│   ├── evaluate_step.py    # OpenRouter API client
-│   ├── monitor.py          # Stateless and scratchpad monitor classes
+├── extract_steps.py    # Parse .eval logs into monitorable steps
+├── evaluate_step.py    # OpenRouter API client
+├── monitor.py          # Stateless and scratchpad monitor classes
 ├── prompts/
 │   ├── default_monitor.txt # Stateless monitor system prompt
 │   └── scratchpad_monitor.txt # Scratchpad monitor system prompt
@@ -67,7 +66,7 @@ samples = get_sample_steps_set("Logs/attack_run.eval", max_samples=20)
 ```bash
 python3 evaluate_step.py keyinfo #see details about your API key
 python3 evaluate_step.py test #get a greeting from a pirate
-python3 sample_run.txt --max-workers=10 --max-samples=20
+python3 sample_run.py --max-workers=10 --max-samples=20
 ```
 
 
@@ -89,8 +88,3 @@ Trajectories are Claude Opus 4.6 BashArena runs (attack and benign) provided by 
 - Kaufman et al. (2025). [BashArena: A Control Setting for Highly Privileged AI Agents](https://arxiv.org/abs/2512.15688)
 - Bhatt et al. (2025). [Ctrl-Z: Controlling AI Agents via Resampling](https://arxiv.org/abs/2504.10374)
 - Greenblatt et al. (2024). [AI Control: Improving Safety Despite Intentional Subversion](https://arxiv.org/abs/2312.06942)
-
-## TODO
-- more robust error handling
-- improved data logging and visualization
-- add more tests
